@@ -26,7 +26,7 @@ certificates and ipp files), you can still do that and create a symlink in the e
 .ovpn file:
 <pre><code>
     cd /etc/openvpn/
-    ln -s <em>connection-name</em>/<em>connection-name</em>.ovpn <em>connection-name</em>conf
+    ln -s <em>connection-name</em>/<em>connection-name</em>.ovpn <em>connection-name</em>.conf
 </code></pre>
 The <code>@<em>connection-name</em></code> syntax is similar to using "service templates" in systems like
 Ubuntu. Then you can use the following commands to control each connection:
@@ -61,10 +61,10 @@ Append the following lines to file `/etc/rc.d/rc.local`:
 </code></pre>
 Append the following lines to file `/etc/rc.d/rc.local_shutdown`:
 <pre><code>
-    if [ -x /etcrc.d/rc.openvpn@<em>connection-name</em> ]
-    then
+    <span color="red">if<span> <span color="yellow">[</span> <span color="gray">-x</span> <span color="black">/etc/rc.d/rc.openvpn@<em>connection-name</em></span> ]
+    <span color="red">then</span>
 	/etc/rc.d/rc.openvpn@<em>connection-name</em> stop
-    fi
+    <spanc color="red">fi</span>
 </code></pre>
 
 Remember to make the `rc.local_shutdown` file executable:
