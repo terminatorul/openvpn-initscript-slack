@@ -8,9 +8,9 @@ for Slackware Linux.
 
 ## Usage
 Copy the `rc.openvpn` file from here to:
-
+```
     /etc/rc.d/rc.openvpn
-
+```
 This will all files matching the name `/etc/openvpn/*.conf`, and will start, stop or show all
 of them as requested on the command line. To control each connection, create symlinks
 next to the `rc.openvpn` file, similar to:
