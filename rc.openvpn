@@ -1,1 +1,233 @@
-/etc/rc.d/rc.openvpn
+#!/bin/sh 
+# 
+# /etc/rc.d/rc.openvpn 
+# 
+# Start/stop/restart the openvpn server. 
+#
+ 
+GREEN="[0;32m"
+RED="[0;31m"
+WHITE="[0;97m"
+DEFAULT="[0m"
+
+ovpn_pid()
+{
+    PID="$(ps -C openvpn -o "pid,command" | grep --fixed-string -e"--cd /etc/openvpn/ --config $CONFIG_FILE --daemon")" || unset PID
+    
+    if test -n "${PID-}"
+    then
+	PID="$(echo "$PID" | { read PID CMD; echo "$PID"; } )"
+    fi
+}
+
+if [ "$(basename "$0")" = "rc.openvpn" ]
+then
+    ovpn_start()
+    {
+	if [ -x /usr/sbin/openvpn ]
+	then
+	    for CONFIG_FILE in /etc/openvpn/*.conf
+	    do
+		ovpn_pid
+
+		if test -z "${PID-}"
+		then
+		    SERVICE_FILE="$0@$(basename "$CONFIG_FILE" .conf)"
+
+		    if [ -r "$CONFIG_FILE"  ] # -a \( \! -e "$SERVICE_FILE" -o -x "$SERVICE_FILE" \) ]
+		    then 
+			echo "${WHITE}Starting${DEFAULT} OpenVPN connection ${WHITE}$CONFIG_FILE${DEFAULT}" 
+			/usr/sbin/openvpn --cd "/etc/openvpn/" --config "$CONFIG_FILE" --daemon
+		    fi
+		else
+		    echo "OpenVPN connection ${WHITE}$CONFIG_FILE${DEFAULT} already running." >&2
+		fi
+	    done
+	fi 
+    }
+
+    ovpn_signal()
+    {
+	if test -n "${2-}"
+	then
+	    echo "${WHITE}$2${DEFAULT} OpenVPN services..."
+	fi
+	killall "$1" openvpn || RETURN=$?
+
+	if test -n "$RETURN" -a "$1"
+	then
+	    echo "${RED}All OpenVPN services are stopped.${DEFAULT}"
+	    exit 1
+	fi
+    }
+
+    ovpn_status()
+    {
+
+	SERVICE_FILE_BASENAME="$(basename "$0")"
+	if test -x "$0" && { grep -q -E "^[[:space:]]*['\"]?$0['\"]?[[:space:]]+['\"]?start['\"]?[[:space:]]*\$" /etc/rc.d/rc.local /etc/rc.d/rc.M || test -x /etc/rc.d/rc3.d/S*"${SERVICE_FILE_BASENAME#rc.}"; }
+	then
+	    echo "OpenVPN service ${WHITE}$0${DEFAULT} ${GREEN}enabled${DEFAULT}"
+	else
+	    echo "OpenVPN service ${WHITE}$0${DEFAULT} ${RED}disabled${DEFAULT}"
+	fi
+
+	RUNNING_SERVICES=
+
+	ovpn_signal -USR2
+
+	for CONFIG_FILE in /etc/openvpn/*.conf
+	do
+	    ovpn_pid
+
+	    SERVICE_FILE="$0@$(basename "$CONFIG_FILE" .conf)"
+	    SERVICE_FILE_BASENAME="$(basename "$SERVICE_FILE")"
+
+	    echo ""
+
+	    if test -x "$SERVICE_FILE" && { grep -q -E "^[[:space:]]*['\"]?${SERVICE_FILE}['\"]?[[:space:]]+['\"]?start['\"]?[[:space:]]*\$" /etc/rc.d/rc.local /etc/rc.d/rc.M || test -x /etc/rc.d/rc3.d/S*"${SERVICE_FILE_BASENAME#rc.}"; }
+	    then
+		echo "OpenVPN service ${WHITE}$SERVICE_FILE${DEFAULT} ${GREEN}enabled${DEFAULT}"
+	    else
+		echo "OpenVPN service ${WHITE}$SERVICE_FILE${DEFAULT} ${RED}disabled${DEFAULT}"
+	    fi
+
+	    if test -z "${PID-}"
+	    then
+		echo "OpenVPN connection ${WHITE}$CONFIG_FILE${DEFAULT} ${RED}stopped${DEFAULT}."
+	    else
+		echo "OpenVPN connection ${WHITE}$CONFIG_FILE${DEFAULT} ${GREEN}running${DEFAULT}, process $PID"
+		echo "${WHITE}System log${DEFAULT}:"
+		grep -F "[$PID]: " /var/log/syslog | tail
+		echo "${WHITE}Statistics${DEFAULT}:"
+		grep -F "[$PID]: " /var/log/messages | tail
+		RUNNING_SERVICES="$RUNNING_SERVICES $PID"
+	    fi
+	done
+
+	if test -z "$RUNNING_SERVICES"
+	then
+	    return 1
+	fi
+    }
+else
+    CONFIG_FILE="$(basename "$0")"
+    CONFIG_FILE="${CONFIG_FILE#rc.openvpn@}"
+    CONFIG_FILE="/etc/openvpn/$CONFIG_FILE.conf"
+
+    ovpn_start()
+    {
+	ovpn_pid
+
+	if test -z "${PID-}"
+	then
+	    if [ -x /usr/sbin/openvpn ]
+	    then
+		for VPN_CONFIG in /etc/openvpn/*.conf
+		do
+		    if [ -r "$VPN_CONFIG" -a "$VPN_CONFIG" = "$CONFIG_FILE" ]
+		    then 
+			echo "${WHITE}Starting${DEFAULT} OpenVPN connection ${WHITE}$VPN_CONFIG${DEFAULT}" 
+			/usr/sbin/openvpn --cd "/etc/openvpn/" --config "$VPN_CONFIG" --daemon
+			exit $?
+		    fi
+		done
+	    fi 
+
+	    echo "Make sure the expected config file ${RED}$CONFIG_FILE${DEFAULT} and binary executable ${RED}/usr/sbin/openvpn${DEFAULT} are available." >&2
+	    exit 125
+	else
+	    echo "OpenVPN connection ${WHITE}$CONFIG_FILE${DEFAULT} already running." >&2
+	fi
+    }
+
+    ovpn_signal()
+    {
+	ovpn_pid
+	
+	if test -z "${PID-}"
+	then
+	    echo "OpenVPN connection ${WHITE}$CONFIG_FILE${DEFAULT} is currently ${RED}stopped${DEFAULT} or not found." >&2
+	    if test "$1" = "-TERM"
+	    then
+		:
+	    else
+		ovpn_start
+	    fi
+	else
+	    echo "${WHITE}$2${DEFAULT} OpenVPN connection ${WHITE}$CONFIG_FILE${DEFAULT}"
+	    kill "$1" "$PID"
+	fi
+    } 
+
+    ovpn_status()
+    {
+	ovpn_pid
+
+	SERVICE_FILE_BASENAME="$(basename "$0")"
+	if test -x "$0" && { grep -q -E "^[[:space:]]*['\"]?$0['\"]?[[:space:]]+['\"]?start['\"]?[[:space:]]*\$" /etc/rc.d/rc.local /etc/rc.d/rc.M || test -x /etc/rc.d/rc3.d/S*"${SERVICE_FILE_BASENAME#rc.}"; }
+	then
+	    echo "OpenVPN service ${WHITE}$0${DEFAULT} ${GREEN}enabled${DEFAULT}"
+	else
+	    echo "OpenVPN service ${WHITE}$0${DEFAULT} ${RED}disabled${DEFAULT}"
+	fi
+
+	if test -z "${PID-}"
+	then
+	    echo "OpenVPN connection ${WHITE}$CONFIG_FILE${DEFAULT} ${RED}stopped${DEFAULT}."
+	    return 1
+	else
+	    echo "OpenVPN connection ${WHITE}$CONFIG_FILE${DEFAULT} ${GREEN}running${DEFAULT}, process ${WHITE}$PID${DEFAULT}"
+	    echo "${WHITE}System log${DEFAULT}:"
+	    grep -F "[$PID]: " /var/log/syslog | tail
+	    ovpn_signal -USR2 'Statistics for'
+	    grep -F "[$PID]: " /var/log/messages | tail
+	fi
+    }
+fi
+
+ovpn_stop()
+{ 
+    ovpn_signal -TERM 'Stopping'
+} 
+
+ovpn_reload()
+{
+    ovpn_signal -HUP 'Reloading'
+}
+
+ovpn_reconnect()
+{
+    ovpn_signal -USR1 'Reconnecting'
+}
+
+ovpn_restart()
+{ 
+  ovpn_stop || true
+  sleep 2 
+  ovpn_start 
+} 
+
+case "${1-}" in 
+    ('start') 
+	ovpn_start 
+	;; 
+    ('stop') 
+	ovpn_stop 
+	;; 
+    ('restart') 
+	ovpn_restart 
+	;; 
+    ('reload')
+	ovpn_reload
+	;;
+    ('reconnect')
+	ovpn_reconnect
+	;;
+    ('status')
+	ovpn_status
+	;;
+    (*) 
+      echo "Usage: ${WHITE}$0 {${WHITE}start${DEFAULT}|${WHITE}stop${DEFAULT}|${WHITE}restart${DEFAULT}|${WHITE}reload${DEFAULT}|${WHITE}reconnect${DEFAULT}|${WHITE}status${DEFAULT}}" 
+      exit 127
+esac
