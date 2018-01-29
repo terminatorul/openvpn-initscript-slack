@@ -19,12 +19,12 @@ where <code><em>connection-name</em></code> is also the name of a config file un
 This is somewhat similar to using "service templates" in systems like Ubuntu. Then you can 
 use the following commands to control each connection:
 <pre><code>
-    /etc/rc.d/rc.openvpn@<em>connection-name<em> start
-    /etc/rc.d/rc.openvpn@<em>connection-name<em> stop
-    /etc/rc.d/rc.openvpn@<em>connection-name<em> restart
-    /etc/rc.d/rc.openvpn@<em>connection-name<em> reload
-    /etc/rc.d/rc.openvpn@<em>connection-name<em> reconnect
-    /etc/rc.d/rc.openvpn@<em>connection-name<em> status
+    /etc/rc.d/rc.openvpn@<em>connection-name</em> start
+    /etc/rc.d/rc.openvpn@<em>connection-name</em> stop
+    /etc/rc.d/rc.openvpn@<em>connection-name</em> restart
+    /etc/rc.d/rc.openvpn@<em>connection-name</em> reload
+    /etc/rc.d/rc.openvpn@<em>connection-name</em> reconnect
+    /etc/rc.d/rc.openvpn@<em>connection-name</em> status
 </code></pre>
 Without the <code>@<em>connection-name</em></code> part, the commands apply to all connection files under
 `/etc/openvpn/` directory:
@@ -41,19 +41,19 @@ options like `syslog` are not re-applied when changed in the connection configur
 
 ## Auto-starting a connection
 Append the following lines to file `/etc/rc.d/rc.local`:
-```sh
-    if [ -x /etc/rc.d/rc.openvpn@__connection-name__ ]
+<pre><code>
+    if [ -x /etc/rc.d/rc.openvpn@<em>connection-name</em> ]
     then
-	/etc/rc.d/rc.openvpn@_connection-name_ start
+	/etc/rc.d/rc.openvpn@<em>connection-name</em> start
     fi
-```
+</code></pre>
 Append the following lines to file `/etc/rc.d/rc.local_shutdown`:
-```sh
-    if [ -x /etcrc.d/rc.openvpn@__connection-name__ ]
+<pre><code>
+    if [ -x /etcrc.d/rc.openvpn@<em>connection-name</em> ]
     then
-	/etc/rc.d/rc.openvpn@_connection-name_ stop
+	/etc/rc.d/rc.openvpn@<em>connection-name</em> stop
     fi
-```
+</code></pre>
 
 Remember to make the `rc.local_shutdown` file executable:
 ```sh
@@ -64,7 +64,7 @@ The init script will be able see if you enabled a connection this way. But curre
 is not possible to enable a connection automatically, so this has to be done manually.
 
 For the same purpose, you can also create systemv style links instead, under the
-`/etc/rc.d/rc[-3].d/` directories and the link from `rc3.d/` will be seen by this init
+`/etc/rc.d/rc[0-6KSs].d/` directories and the link from `rc3.d/` will be seen by this init
 script. But remember that the native method in Slackware, to enable a service, is to 
 add it to the `rc.local` and `rc.local_shutdown` files.
 
@@ -73,7 +73,7 @@ All connections are created with the following `openvpn` command:
 ```sh
     /usr/sbin/openvpn --cd "/etc/openvpn/" --config "$CONFIG_FILE" --daemon
 ```
-Other options like `syslog __tunnel-name__` must be included in the given config file
+Other options like <code>syslog <em>tunnel-name</em></code> must be included in the given config file
 (under `/etc/openvpnv/` directory). Some script features include:
  * Highlighting for command output in the console
  * Support for multiple openvpn connections if needed
