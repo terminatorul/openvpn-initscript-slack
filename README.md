@@ -11,7 +11,7 @@ of them as requested on the command line. To control each connection, create sym
 next to the `rc.openvpn` file, similar to:
 ```sh
     cd /etc/rc.d
-    ln -s rc.openvpn rc.openvpn@__connection-name__
+    ln -s rc.openvpn rc.openvpn@<em>__connection-name__</em>
 ```
 where `connection-name` is also the name of a config file under /etc/openvpn, that is:
 ```sh
@@ -78,5 +78,5 @@ Other options like `syslog __tunnel-name__` must be included in the given config
 (under `/etc/openvpnv/` directory). Some script features include:
  * Highlighting for command output in the console
  * Support for multiple openvpn connections if needed
-     ** Operate on either all connections at once, or on each connection at a time
+     * Operate on either all connections at once, or on each connection at a time
  * Include openvpn statistics for the connection in the status output
