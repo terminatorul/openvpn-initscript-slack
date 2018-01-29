@@ -1,7 +1,7 @@
 # OpenVPN connections as system services for Slackware Linux
 Slackware Linux has no specific init script for openvpn and openvpn connections.
-Slackware documentation for openvpn simply suggests to copy paste the content a
-very simple init script to the appropriate system file.
+Slackware documentation for openvpn suggests to copy/paste the content of a
+minimal init script to the appropriate system file.
 
 Here is a more useful init script to start, stop and show openvpn connections
 for Slackware Linux.
@@ -61,10 +61,10 @@ Append the following lines to file `/etc/rc.d/rc.local`:
 </code></pre>
 Append the following lines to file `/etc/rc.d/rc.local_shutdown`:
 <pre><code>
-    <span color="red">if<span> <span color="yellow">[</span> <span color="gray">-x</span> <span color="black">/etc/rc.d/rc.openvpn@<em>connection-name</em></span> ]
-    <span color="red">then</span>
+    if [ -x /etc/rc.d/rc.openvpn@<em>connection-name</em> ]
+    then
 	/etc/rc.d/rc.openvpn@<em>connection-name</em> stop
-    <spanc color="red">fi</span>
+    fi
 </code></pre>
 
 Remember to make the `rc.local_shutdown` file executable:
