@@ -9,10 +9,9 @@ Copy the `rc.openvpn` file from here to:
 This will all files matching name `/etc/openvpn/*.conf`, and will start / stop / show all
 of them as requested on the command line. To control each connection, create symlinks
 next to the `rc.openvpn` file, similar to:
-```sh
-    cd /etc/rc.d
-    ln -s rc.openvpn rc.openvpn@<em>__connection-name__</em>
-```
+<pre><code> cd /etc/rc.d
+ln -s rc.openvpn rc.openvpn@<em>connection-name</em>
+</code></pre>
 where `connection-name` is also the name of a config file under /etc/openvpn, that is:
 ```sh
     /etc/openvpn/__connection-name__.conf
