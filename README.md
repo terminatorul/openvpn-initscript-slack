@@ -10,7 +10,7 @@ This will all files matching name `/etc/openvpn/*.conf`, and will start / stop /
 of them as requested on the command line. To control each connection, create symlinks
 next to the `rc.openvpn` file, similar to:
 <pre><code>cd /etc/rc.d
-ln -s rc.openvpn rc.openvpn@<em>connection-name</em>
+ln -s rc.openvpn rc.openvpn<strong>@</strong><em>connection-name</em>
 </code></pre>
 where <code><em>connection-name</em></code> is also the name of a config file under `/etc/openvpn/`, that is:
 <pre><code>
@@ -65,7 +65,7 @@ is not possible to enable a connection automatically, so this has to be done man
 
 For the same purpose, you can also create systemv style links instead, under the
 `/etc/rc.d/rc[0-6KSs].d/` directories and the link from `rc3.d/` will be seen by this init
-script. But remember that the native method in Slackware, to enable a service, is to 
+script. But remember the native method in Slackware, to enable a service, is to 
 add it to the `rc.local` and `rc.local_shutdown` files.
 
 ## Features
