@@ -14,18 +14,18 @@ Copy the `rc.openvpn` file from here to:
 This will all files matching the name `/etc/openvpn/*.conf`, and will start, stop or show all
 of them as requested on the command line. To control each connection, create symlinks
 next to the `rc.openvpn` file, similar to:
-<pre><code> cd /etc/rc.d
+<pre><code>    cd /etc/rc.d
     ln -s rc.openvpn rc.openvpn@<em>connection-name</em></code></pre>
 where <code><em>connection-name</em></code> is also the name of a config file under `/etc/openvpn/`, that is:
-<pre><code> /etc/openvpn/<em>connection-name</em>.conf</code></pre>
+<pre><code>    /etc/openvpn/<em>connection-name</em>.conf</code></pre>
 If you want o keep connections in separate sub-directories under `/etc/openvpn/` (to separate the keys,
 certificates and ipp files), you can still do that and create a symlink in the expected place to the
 .ovpn file:
-<pre><code> cd /etc/openvpn/
+<pre><code>    cd /etc/openvpn/
     ln -s <em>connection-name</em>/<em>connection-name</em>.ovpn <em>connection-name</em>.conf</code></pre>
 The <code>@<em>connection-name</em></code> syntax is similar to using "service templates" in systems like
 Ubuntu. Then you can use the following commands to control each connection:
-<pre><code> /etc/rc.d/rc.openvpn@<em>connection-name</em> start
+<pre><code>    /etc/rc.d/rc.openvpn@<em>connection-name</em> start
     /etc/rc.d/rc.openvpn@<em>connection-name</em> stop
     /etc/rc.d/rc.openvpn@<em>connection-name</em> restart
     /etc/rc.d/rc.openvpn@<em>connection-name</em> reload
@@ -46,12 +46,12 @@ options like `syslog` are not re-applied when changed in the connection configur
 
 ## Auto-starting a connection
 Append the following lines to file `/etc/rc.d/rc.local`:
-<pre><code> if [ -x /etc/rc.d/rc.openvpn@<em>connection-name</em> ]
+<pre><code>    if [ -x /etc/rc.d/rc.openvpn@<em>connection-name</em> ]
     then
 	/etc/rc.d/rc.openvpn@<em>connection-name</em> start
     fi</code></pre>
 Append the following lines to file `/etc/rc.d/rc.local_shutdown`:
-<pre><code> if [ -x /etc/rc.d/rc.openvpn@<em>connection-name</em> ]
+<pre><code>    if [ -x /etc/rc.d/rc.openvpn@<em>connection-name</em> ]
     then
 	/etc/rc.d/rc.openvpn@<em>connection-name</em> stop
     fi</code></pre>
