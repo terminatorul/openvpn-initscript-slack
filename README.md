@@ -1,5 +1,10 @@
-# openvpn-initscript-slack
-Init script to start, stop and show openvpn connections for Slackware Linux
+# OpenVPN connections as system services for Slackware Linux
+Slackware Linux has no specific init script for openvpn and openvpn connections.
+Slackware documentation for openvpn simply suggests to copy paste the content a
+very simple init script to the appropriate system file.
+
+Here is a more useful init script to start, stop and show openvpn connections
+for Slackware Linux.
 
 ## Usage
 Copy the `rc.openvpn` file from here to:
@@ -16,8 +21,15 @@ where <code><em>connection-name</em></code> is also the name of a config file un
 <pre><code>
     /etc/openvpn/<em>connection-name</em>.conf
 </code></pre>
-This is somewhat similar to using "service templates" in systems like Ubuntu. Then you can 
-use the following commands to control each connection:
+If you want o keep connections in separate sub-directories under `/etc/openvpn/` (to separate the keys,
+certificates and ipp files), you can still do that and create a symlink in the expected place to the
+.ovpn file:
+<pre><code>
+    cd /etc/openvpn/
+    ln -s <em>connection-name</em>/<em>connection-name</em>.ovpn <em>connection-name</em>conf
+</code></pre>
+The <code>@<em>connection-name</em></code> syntax is similar to using "service templates" in systems like
+Ubuntu. Then you can use the following commands to control each connection:
 <pre><code>
     /etc/rc.d/rc.openvpn@<em>connection-name</em> start
     /etc/rc.d/rc.openvpn@<em>connection-name</em> stop
