@@ -1,5 +1,5 @@
 # OpenVPN connections as system services in Slackware Linux
-Slackware Linux has no specific init script for openvpn and openvpn connections.
+Slackware Linux has no specific init script for [openvpn](https://openvpn.net/index.php/open-source.html) and openvpn connections.
 Slackware documentation for openvpn suggests to copy/paste the content of a
 minimal init script to the appropriate system file.
 
@@ -42,7 +42,8 @@ Without the <code>@<em>connection-name</em></code> part, the commands apply to a
     /etc/rc.d/rc.openvpn status
 ```
 `reload` command is similar to a service restart, except a few 
-options like `syslog` are not re-applied when changed in the connection configuration file. 
+options like `syslog` are not re-applied when changed in the connection configuration file. See the openvpn
+[manual page](https://community.openvpn.net/openvpn/wiki/Openvpn24ManPage) for details.
 
 ## Auto-starting a connection
 To enable a service and start it automatically with Slackware, append the following lines to file `/etc/rc.d/rc.local`:
