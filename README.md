@@ -1,4 +1,4 @@
-# OpenVPN connections as system services for Slackware Linux
+# OpenVPN connections as system services in Slackware Linux
 Slackware Linux has no specific init script for openvpn and openvpn connections.
 Slackware documentation for openvpn suggests to copy/paste the content of a
 minimal init script to the appropriate system file.
@@ -11,7 +11,7 @@ Copy the `rc.openvpn` file from here to:
 ```
     /etc/rc.d/rc.openvpn
 ```
-This will all files matching the name `/etc/openvpn/*.conf`, and will start, stop or show all
+This will search for all connection files matching the name `/etc/openvpn/*.conf`, and will start, stop or show all
 of them as requested on the command line. To control each connection, create symlinks
 next to the `rc.openvpn` file, similar to:
 <pre><code>    cd /etc/rc.d
@@ -45,7 +45,7 @@ Without the <code>@<em>connection-name</em></code> part, the commands apply to a
 options like `syslog` are not re-applied when changed in the connection configuration file. 
 
 ## Auto-starting a connection
-Append the following lines to file `/etc/rc.d/rc.local`:
+To enable a service and start it automatically with Slackware, append the following lines to file `/etc/rc.d/rc.local`:
 <pre><code>    if [ -x /etc/rc.d/rc.openvpn@<em>connection-name</em> ]
     then
 	/etc/rc.d/rc.openvpn@<em>connection-name</em> start
@@ -61,8 +61,8 @@ Remember to make the `rc.local_shutdown` file executable:
     chmod +x /etc/rc.d/rc.local_shutdown
 ```
 
-The init script will be able see if you enabled a connection this way. But currently it
-is not possible to enable a connection automatically, so this has to be done manually.
+This init script will  see if a connection is enabled this way when you run the `status` command.
+But currently it is not possible to enable a connection automatically, so this has to be done manually.
 
 For the same purpose, you can also create systemv style links instead, under the
 `/etc/rc.d/rc[0-6KSs].d/` directories and the link from `rc3.d/` will be seen by this init
