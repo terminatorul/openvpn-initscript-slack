@@ -10,7 +10,7 @@ This will all files matching name `/etc/openvpn/*.conf`, and will start / stop /
 of them as requested on the command line. To control each connection, create symlinks
 next to the `rc.openvpn` file, similar to:
 <pre><code>cd /etc/rc.d
-ln -s rc.openvpn rc.openvpn<strong>@</strong><em>connection-name</em>
+ln -s rc.openvpn rc.openvpn@<em>connection-name</em>
 </code></pre>
 where <code><em>connection-name</em></code> is also the name of a config file under `/etc/openvpn/`, that is:
 <pre><code>
@@ -69,12 +69,14 @@ script. But remember the native method in Slackware, to enable a service, is to
 add it to the `rc.local` and `rc.local_shutdown` files.
 
 ## Features
-All connections are created with the following `openvpn` command:
+All connections are created with the `openvpn` command:
 ```sh
     /usr/sbin/openvpn --cd "/etc/openvpn/" --config "$CONFIG_FILE" --daemon
 ```
 Other options like <code>syslog <em>tunnel-name</em></code> must be included in the given config file
-(under `/etc/openvpnv/` directory). Some script features include:
+(under `/etc/openvpnv/`).
+
+Some script features include:
  * Highlighting for command output in the console
  * Support for multiple openvpn connections if needed
      * Operate on either all connections at once, or on each connection at a time
