@@ -9,24 +9,24 @@ Copy the `rc.openvpn` file from here to:
 This will all files matching name `/etc/openvpn/*.conf`, and will start / stop / show all
 of them as requested on the command line. To control each connection, create symlinks
 next to the `rc.openvpn` file, similar to:
-<code> cd /etc/rc.d
+<pre><code>cd /etc/rc.d
 ln -s rc.openvpn rc.openvpn@<em>connection-name</em>
-</code>
-where <code><em>connection-name</em></code> is also the name of a config file under /etc/openvpn, that is:
-```sh
-    /etc/openvpn/__connection-name__.conf
-```
+</code></pre>
+where <code><em>connection-name</em></code> is also the name of a config file under `/etc/openvpn/`, that is:
+<pre><code>
+    /etc/openvpn/<em>connection-name</em>.conf
+</code></pre>
 This is somewhat similar to using "service templates" in systems like Ubuntu. Then you can 
 use the following commands to control each connection:
-```
-    /etc/rc.d/rc.openvpn@__connection-name__ start
-    /etc/rc.d/rc.openvpn@__connection-name__ stop
-    /etc/rc.d/rc.openvpn@__connection-name__ restart
-    /etc/rc.d/rc.openvpn@__connection-name__ reload
-    /etc/rc.d/rc.openvpn@__connection-name__ reconnect
-    /etc/rc.d/rc.openvpn@__connection-name__ status
-```
-Without the `@__connection-name__` part, the commands apply to all connection files under
+<pre><code>
+    /etc/rc.d/rc.openvpn@<em>connection-name<em> start
+    /etc/rc.d/rc.openvpn@<em>connection-name<em> stop
+    /etc/rc.d/rc.openvpn@<em>connection-name<em> restart
+    /etc/rc.d/rc.openvpn@<em>connection-name<em> reload
+    /etc/rc.d/rc.openvpn@<em>connection-name<em> reconnect
+    /etc/rc.d/rc.openvpn@<em>connection-name<em> status
+</code></pre>
+Without the <code>@<em>connection-name</em></code> part, the commands apply to all connection files under
 `/etc/openvpn/` directory:
 ```sh
     /etc/rc.d/rc.openvpn start
