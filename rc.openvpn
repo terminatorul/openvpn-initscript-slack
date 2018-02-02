@@ -179,9 +179,9 @@ else
 	else
 	    echo "OpenVPN connection ${WHITE}$CONFIG_FILE${DEFAULT} ${GREEN}running${DEFAULT}, process ${WHITE}$PID${DEFAULT}"
 	    echo "${WHITE}System log${DEFAULT}:"
-	    grep -F "[$PID]: " /var/log/syslog | tail
+	    grep --binary-files=text -F "[$PID]: " /var/log/syslog | tail
 	    ovpn_signal -USR2 'Statistics for'
-	    grep -F "[$PID]: " /var/log/messages | tail
+	    grep --binary-files=text -F "[$PID]: " /var/log/messages | tail
 	fi
     }
 fi

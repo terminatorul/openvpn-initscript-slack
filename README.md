@@ -3,8 +3,7 @@ Slackware Linux has no specific init script for [openvpn](https://openvpn.net/in
 Slackware documentation for openvpn suggests to copy/paste the content of a
 minimal init script to the appropriate system file.
 
-Here is a more useful init script to start, stop and show openvpn connections
-for Slackware Linux.
+Here is a more useful init script to start, stop and show the openvpn connections.
 
 ## Usage
 Copy the `rc.openvpn` file from here to:
